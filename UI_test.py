@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, font
 import threading as th
+from tkinter import filedialog as fd
 
 class PIV_UI : 
     def __init__(self) -> None:
@@ -14,7 +15,7 @@ class PIV_UI :
     def start(self):
 
         self.window.title("UI Calcul PIV")
-        self.window.geometry('700x1000')
+        self.window.geometry('800x1000')
         self.window.configure(bg='gray3')
         
         self.main_display()
@@ -57,9 +58,10 @@ class PIV_UI :
 
     def refresh_window(self):
         self.image.sequence_choice()
+        self.image.refresh()
 
     def main_loop(self):
-        self.window.after(1,th.Thread(target=self.refresh_window))
+        self.window.after(1,self.refresh_window)
         self.window.mainloop()
 
 class image_input:
@@ -70,16 +72,16 @@ class image_input:
         self.img_frame = tk.Frame(self.window)
         #Variables
         self.Input_typedata = ''
+            # SEQ
         self.Input_SEQDirname = ''
+        self.Input_SEQDebut = 0
+        self.Input_SEQinterImg = 0
+        self.Input_SEQinterPaire = 0
+            # Double
         self.Input_Imgdouble = ''
+            # Two
         self.Input_TWO1 = ''
         self.Input_TWO2 = ''
-        #Global interactive items
-        self.Input_typedata_list = ['TWO','DBL','SEQDBL','SEQ']
-        self.typedata = ttk.Combobox(self.img_frame,values=self.Input_typedata_list,)
-        self.SEQDirname = tk.Entry(self.img_frame)
-        #toggleable non-interactive items
-
         # Styles 
         self.text_font = font.Font(family='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
@@ -89,7 +91,40 @@ class image_input:
                                         bordercolor="chartreuse2",arrowcolor="chartreuse2",
                                         lightcolor="chartreuse2",darkcolor="gray3",focusfill="gray3",
                                         selectbackground="gray3", selectforeground="chartreuse2")
-        self.entry_style = ttk.Style()
+
+        #Global interactive items
+        self.Input_typedata_list = ['TWO','DBL','SEQDBL','SEQ']
+        self.typedata = ttk.Combobox(self.img_frame,values=self.Input_typedata_list)
+            # SEQ
+        self.SEQDirname = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=23)
+        self.get_SEQdir = tk.Button(self.img_frame,text="🗎",command = self.path_choiceSEQ,
+                                    foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+        self.SEQDebut = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=6)
+        self.SEQinterImg = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=6)
+        self.SEQinterDouble = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=6)
+        #DOUBLE
+
+        #toggleable non-interactive items
+            #SEQ
+        self.seq_data_label_path = tk.Label(self.img_frame ,text='>>> Sequence path :')
+        self.seq_data_label_path.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+
+        self.seq_data_label_seq = tk.Label(self.img_frame ,text='>>> sequence info :')
+        self.seq_data_label_seq.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+
+        self.seq_data_label_deb = tk.Label(self.img_frame ,text='>>>> début :')
+        self.seq_data_label_deb.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+
+        self.seq_data_label_inter = tk.Label(self.img_frame ,text='>>>> inter image :')
+        self.seq_data_label_inter.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+
+        self.seq_data_label_doub = tk.Label(self.img_frame ,text='>>>> inter double :')
+        self.seq_data_label_doub.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+
 
     def setup(self):
         #----------- Global display --------------
@@ -117,33 +152,46 @@ class image_input:
         typedata_label.grid(column = 1, row = 2, sticky = 'W')
         #-------- IF SEQ -> seq properties -------
         #path label
-        seq_data_label = tk.Label(self.img_frame ,text='>>> Sequence path :')
-        seq_data_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
-        seq_data_label.grid(column = 2, row = 3, sticky = 'W')
+        self.seq_data_label_path.grid(column = 2, row = 3, sticky = 'W')
         #path selection
-        self.SEQDirname.bind('<1>',self.path_choice(self.SEQDirname))
         self.SEQDirname.grid(column = 3, row = 3, sticky = 'W')
+        self.get_SEQdir.grid(column = 4, row = 3)
         #global Label data
-        seq_data_label = tk.Label(self.img_frame ,text='>>> sequence info :')
-        seq_data_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
-        seq_data_label.grid(column = 2, row = 4, sticky = 'W')
+        self.seq_data_label_seq.grid(column = 2, row = 4, sticky = 'W')
         #local label
-        seq_data_label = tk.Label(self.img_frame ,text='>>>> début :')
-        seq_data_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
-        seq_data_label.grid(column = 3, row = 5, sticky = 'W')
-        seq_data_label = tk.Label(self.img_frame ,text='>>>> inter image :')
-        seq_data_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
-        seq_data_label.grid(column = 3, row = 6, sticky = 'W')
+        self.seq_data_label_deb.grid(column = 3, row = 5, sticky = 'W')
+
+        self.seq_data_label_inter.grid(column = 3, row = 6, sticky = 'W')
+        
+        self.seq_data_label_doub.grid(column = 3, row = 7, sticky = 'W')
+        #value entry
+        self.SEQDebut.grid(column = 4, row = 5, sticky = 'W')
+        self.SEQinterImg.grid(column = 4, row = 6, sticky = 'W')
+        self.SEQinterDouble.grid(column = 4, row = 7, sticky = 'W')
 
     def sequence_choice(self):
         pass
     
-    def path_choice(self,item):
-        print('yo le fraté')
+    def path_choiceSEQ(self):
+        filename = fd.askopenfilename()
+        self.Input_SEQDirname = filename
+        self.SEQDirname.insert(0,filename)
 
     def refresh(self):
         self.Input_typedata = self.typedata.get()
-        self
+        self.Input_SEQDirname = self.SEQDirname.get()
+    
+    def entry_validation(self):
+        validity = True
+        error = ''
+        return validity,error
+    
+    def hide_all(self):
+        #SEQ related
+        self.get_SEQdir.pack_forget()
+        self.get_SEQdir.pack_forget()
+
+        
 
 class calcul_input:
     def __init__(self) -> None:
