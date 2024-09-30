@@ -1,0 +1,11 @@
+{
+  "TIME_STEPS": 100,
+  "HEAT_DIFF_COEF": 2.0,
+  "DIMENSIONS": { "lx": 50.0, "ly": 40.0},
+  "MESH": {"nx": 50, "ny": 40},
+  "INITIAL_CONDITION": 100.0,
+  "XMIN_BOUNDARY": {"type": "Dirichlet", "value": 150.0},
+  "XMAX_BOUNDARY": {"type": "Dirichlet", "value": 100.0},
+  "YMIN_BOUNDARY": {"type": "Neumann", "value": 0.0},
+  "YMAX_BOUNDARY": {"type": "Neumann", "value": -10.0}
+}
