@@ -11,6 +11,7 @@ class PIV_UI :
         self.image = image_input(self.window)
         self.calcul = calcul_input()
         self.action = action_input()
+        self.side_thread = ''
 
     def start(self):
 
@@ -24,6 +25,7 @@ class PIV_UI :
         self.action_frame_disp()
 
         self.main_loop()
+        self.window.mainloop()
 
     def main_display(self):
         # Logo Frame
@@ -57,12 +59,13 @@ class PIV_UI :
         self.action.setup()
 
     def refresh_window(self):
-        self.image.sequence_choice()
         self.image.refresh()
+        self.image.type_choice()
 
     def main_loop(self):
-        self.window.after(1,self.refresh_window)
-        self.window.mainloop()
+        self.window.after(100,self.refresh_window)
+        self.window.after(100,self.main_loop)
+        self.window.update()
 
 class image_input:
     def __init__(self,window) -> None:
@@ -72,6 +75,7 @@ class image_input:
         self.img_frame = tk.Frame(self.window)
         #Variables
         self.Input_typedata = ''
+        self.previous_typedata = ''
             # SEQ
         self.Input_SEQDirname = ''
         self.Input_SEQDebut = 0
@@ -150,7 +154,53 @@ class image_input:
         typedata_label = tk.Label(self.img_frame ,text='>> Image selection :')
         typedata_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
         typedata_label.grid(column = 1, row = 2, sticky = 'W')
-        #-------- IF SEQ -> seq properties -------
+        
+        # ---------SEQ option SETUP----------
+        self.show_seq()
+        # -----------------------------------
+        self.hide_all()
+
+    def type_choice(self):
+        print('NEW = ', self.Input_typedata, '| OLD = ', self.previous_typedata)
+        if self.Input_typedata != self.previous_typedata and self.Input_typedata != '':
+            self.hide_all()
+            if self.Input_typedata == 'SEQ':
+                self.show_seq()
+            self.previous_typedata = self.Input_typedata
+    
+    def path_choiceSEQ(self):
+        filename = fd.askopenfilename()
+        self.Input_SEQDirname = filename
+        self.SEQDirname.insert(0,filename)
+
+    def refresh(self):
+        # Get type
+        self.Input_typedata = self.typedata.get()
+        # Get SEQ related
+        self.Input_SEQDirname = self.SEQDirname.get()
+        self.Input_SEQDebut = self.SEQDebut.get()
+        self.Input_SEQinterImg = self.SEQinterImg.get()
+        self.Input_SEQinterPaire = self.SEQinterDouble.get()
+    
+    def entry_validation(self):
+        validity = True
+        error = ''
+        return validity,error
+    
+    def hide_all(self):
+        #SEQ related
+        self.SEQDirname.grid_forget()
+        self.get_SEQdir.grid_forget()
+        self.SEQDebut.grid_forget()
+        self.SEQinterImg.grid_forget()
+        self.SEQinterDouble.grid_forget()
+        self.seq_data_label_path.grid_forget()
+        self.seq_data_label_seq.grid_forget()
+        self.seq_data_label_deb.grid_forget()
+        self.seq_data_label_inter.grid_forget()
+        self.seq_data_label_doub.grid_forget()
+
+    def show_seq(self):
         #path label
         self.seq_data_label_path.grid(column = 2, row = 3, sticky = 'W')
         #path selection
@@ -160,36 +210,13 @@ class image_input:
         self.seq_data_label_seq.grid(column = 2, row = 4, sticky = 'W')
         #local label
         self.seq_data_label_deb.grid(column = 3, row = 5, sticky = 'W')
-
         self.seq_data_label_inter.grid(column = 3, row = 6, sticky = 'W')
-        
         self.seq_data_label_doub.grid(column = 3, row = 7, sticky = 'W')
         #value entry
         self.SEQDebut.grid(column = 4, row = 5, sticky = 'W')
         self.SEQinterImg.grid(column = 4, row = 6, sticky = 'W')
         self.SEQinterDouble.grid(column = 4, row = 7, sticky = 'W')
 
-    def sequence_choice(self):
-        pass
-    
-    def path_choiceSEQ(self):
-        filename = fd.askopenfilename()
-        self.Input_SEQDirname = filename
-        self.SEQDirname.insert(0,filename)
-
-    def refresh(self):
-        self.Input_typedata = self.typedata.get()
-        self.Input_SEQDirname = self.SEQDirname.get()
-    
-    def entry_validation(self):
-        validity = True
-        error = ''
-        return validity,error
-    
-    def hide_all(self):
-        #SEQ related
-        self.get_SEQdir.pack_forget()
-        self.get_SEQdir.pack_forget()
 
         
 
