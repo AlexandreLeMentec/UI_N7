@@ -76,6 +76,9 @@ class image_input:
         #Variables
         self.Input_typedata = ''
         self.previous_typedata = ''
+        self.CalculCPIV_ROI = 'NO'
+        self.CalculCPIV_ROI_old = 'NO'
+        self.varCPIV_ROI = tk.StringVar()
             # SEQ
         self.Input_SEQDirname = ''
         self.Input_SEQDebut = 0
@@ -124,6 +127,9 @@ class image_input:
                                    highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=23)
         self.get_Imgdouble = tk.Button(self.img_frame,text="🗎",command = lambda: self.path_choice(self.Input_Imgdouble, self.Imgdouble),
                                     foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+            #MASK
+        self.CPIV_ROI = tk.Checkbutton(self.img_frame, onvalue='OK', offvalue='NO', variable=self.varCPIV_ROI,foreground="chartreuse2",
+                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
 
         #toggleable non-interactive items
             #SEQ
@@ -179,7 +185,11 @@ class image_input:
         image_label.grid(column = 1, row = 2, sticky = 'W')
 
         #--------- Mask selection ----------------
-
+        mask_label = tk.Label(self.img_frame ,text='>> Add a mask :')
+        mask_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+        mask_label.grid(column = 1, row = 8, sticky = 'W')
+        self.CPIV_ROI.grid(column = 2, row = 8, sticky = 'W')
+        self.CPIV_ROI.deselect()
     def type_choice(self):
         if self.Input_typedata != self.previous_typedata and self.Input_typedata != '':
             self.hide_all()
@@ -192,6 +202,19 @@ class image_input:
             elif self.Input_typedata == 'SEQDBL':
                 self.show_seqdbl()
             self.previous_typedata = self.Input_typedata
+        if self.CalculCPIV_ROI != self.CalculCPIV_ROI_old:
+            if self.CalculCPIV_ROI == 'OK':
+                self.show_mask()
+            else:
+                self.hide_mask()
+            self.CalculCPIV_ROI_old = self.CalculCPIV_ROI
+        
+        
+    def show_mask(self):
+        print("Yipee")   
+
+    def hide_mask(self):
+        print(self.CalculCPIV_ROI)
     
     def path_choice(self,var,item): # generic function for path choice 
         filename = fd.askopenfilename()
@@ -211,7 +234,14 @@ class image_input:
         # Get TWO related
         self.Input_ImgTWO1 = self.ImgTWO1.get()
         self.Input_ImgTWO2 = self.ImgTWO2.get()
-    
+        # Get DBL related
+        self.Input_Imgdouble = self.Imgdouble.get()
+        # Get SEQDBL related
+            # using the same first variable as SEQ
+        # Get Mask related
+        self.CalculCPIV_ROI = self.varCPIV_ROI.get()
+
+
     def entry_validation(self):
         validity = True
         error = ''
