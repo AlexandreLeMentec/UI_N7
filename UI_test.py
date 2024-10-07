@@ -189,6 +189,8 @@ class image_input:
                 self.show_two()
             elif self.Input_typedata == 'DBL':
                 self.show_dbl()
+            elif self.Input_typedata == 'SEQDBL':
+                self.show_seqdbl()
             self.previous_typedata = self.Input_typedata
     
     def path_choice(self,var,item): # generic function for path choice 
@@ -239,6 +241,9 @@ class image_input:
         self.Imgdouble.grid_forget()
         self.get_Imgdouble.grid_forget()
         #SEQDBL related
+        self.SEQDirname.grid_forget()
+        self.get_SEQdir.grid_forget()
+        self.seq_data_label_path.grid_forget()
 
     def show_seq(self):
         #path label
@@ -277,7 +282,12 @@ class image_input:
         self.get_Imgdouble.grid(column = 4, row = 3)
 
     def show_seqdbl(self):
-        pass
+        #path label
+        self.seq_data_label_path.grid(column = 2, row = 3, sticky = 'W')
+        #entry
+        self.SEQDirname.grid(column = 3, row = 3, sticky = 'W')
+        #button
+        self.get_SEQdir.grid(column = 4, row = 3)
 
 
         
