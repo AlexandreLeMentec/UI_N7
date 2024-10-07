@@ -119,6 +119,11 @@ class image_input:
                                     foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
         self.get_ImgTWO2 = tk.Button(self.img_frame,text="🗎",command = lambda: self.path_choice(self.Input_ImgTWO2, self.ImgTWO2),
                                     foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+            #DBL
+        self.Imgdouble = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=23)
+        self.get_Imgdouble = tk.Button(self.img_frame,text="🗎",command = lambda: self.path_choice(self.Input_Imgdouble, self.Imgdouble),
+                                    foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
 
         #toggleable non-interactive items
             #SEQ
@@ -143,6 +148,9 @@ class image_input:
 
         self.two_label_Img2 = tk.Label(self.img_frame ,text='>>> Path Image 2:')
         self.two_label_Img2.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+            #DBL
+        self.DBL_label_path = tk.Label(self.img_frame ,text='>>> Path Image double:')
+        self.DBL_label_path.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
 
     def setup(self):
@@ -171,26 +179,22 @@ class image_input:
         image_label.grid(column = 1, row = 2, sticky = 'W')
 
         #--------- Mask selection ----------------
-        
-        # ---------SEQ option SETUP----------
-        self.show_seq()
-        # ---------TWO option SETUP----------
-        # -----------------------------------
-        self.hide_all()
 
     def type_choice(self):
         if self.Input_typedata != self.previous_typedata and self.Input_typedata != '':
             self.hide_all()
             if self.Input_typedata == 'SEQ':
                 self.show_seq()
-            if self.Input_typedata == 'TWO':
+            elif self.Input_typedata == 'TWO':
                 self.show_two()
+            elif self.Input_typedata == 'DBL':
+                self.show_dbl()
             self.previous_typedata = self.Input_typedata
     
-    def path_choice(self,var,item):
+    def path_choice(self,var,item): # generic function for path choice 
         filename = fd.askopenfilename()
         var = filename
-        #self.Input_SEQDirname = filename
+        #self.Input_SEQDirname = filename 
         item.insert(0,filename)
         #self.SEQDirname.insert(0,filename)
 
@@ -202,6 +206,9 @@ class image_input:
         self.Input_SEQDebut = self.SEQDebut.get()
         self.Input_SEQinterImg = self.SEQinterImg.get()
         self.Input_SEQinterPaire = self.SEQinterDouble.get()
+        # Get TWO related
+        self.Input_ImgTWO1 = self.ImgTWO1.get()
+        self.Input_ImgTWO2 = self.ImgTWO2.get()
     
     def entry_validation(self):
         validity = True
@@ -228,6 +235,9 @@ class image_input:
         self.get_ImgTWO1.grid_forget()
         self.get_ImgTWO2.grid_forget()
         #DBL related
+        self.DBL_label_path.grid_forget()
+        self.Imgdouble.grid_forget()
+        self.get_Imgdouble.grid_forget()
         #SEQDBL related
 
     def show_seq(self):
@@ -259,7 +269,12 @@ class image_input:
         self.get_ImgTWO2.grid(column = 4, row = 4)
 
     def show_dbl(self):
-        pass
+        #label 
+        self.DBL_label_path.grid(column = 2, row = 3, sticky = 'W')
+        #entry
+        self.Imgdouble.grid(column = 3, row = 3, sticky = 'W')
+        #Button
+        self.get_Imgdouble.grid(column = 4, row = 3)
 
     def show_seqdbl(self):
         pass
