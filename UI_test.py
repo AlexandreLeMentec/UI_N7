@@ -161,7 +161,6 @@ class image_input:
         self.hide_all()
 
     def type_choice(self):
-        print('NEW = ', self.Input_typedata, '| OLD = ', self.previous_typedata)
         if self.Input_typedata != self.previous_typedata and self.Input_typedata != '':
             self.hide_all()
             if self.Input_typedata == 'SEQ':
