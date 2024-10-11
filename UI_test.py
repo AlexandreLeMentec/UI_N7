@@ -16,7 +16,7 @@ class PIV_UI :
     def start(self):
 
         self.window.title("UI Calcul PIV")
-        self.window.geometry('800x1000')
+        self.window.geometry('900x1000')
         self.window.configure(bg='gray3')
         
         self.main_display()
@@ -73,12 +73,20 @@ class image_input:
         self.window = window
         #general frame
         self.img_frame = tk.Frame(self.window)
+        self.Input_typedata_list = ['TWO','DBL','SEQDBL','SEQ']
         #Variables
+            #General Frame
         self.Input_typedata = ''
-        self.previous_typedata = ''
-        self.CalculCPIV_ROI = 'NO'
-        self.CalculCPIV_ROI_old = 'NO'
-        self.varCPIV_ROI = tk.StringVar()
+        self.previous_typedata = '' # to check if the variable changed
+            #Mask 
+        self.Input_Masque = 'NO'
+        self.Input_Masque_old = 'NO' # to check if the variable changed
+        self.varMasque = tk.StringVar() # variable buffer for the checkbox
+        self.Input_TypeMasque = ''
+        self.Input_TypeMasqueold = ''
+        self.Input_TypeMasque_list = ['ONE','SEQ']
+        self.Input_OneNameMasque = ''
+        self.Input_SeqDirMasque = ''
             # SEQ
         self.Input_SEQDirname = ''
         self.Input_SEQDebut = 0
@@ -98,9 +106,9 @@ class image_input:
                                         bordercolor="chartreuse2",arrowcolor="chartreuse2",
                                         lightcolor="chartreuse2",darkcolor="gray3",focusfill="gray3",
                                         selectbackground="gray3", selectforeground="chartreuse2")
+        
 
         #Global interactive items
-        self.Input_typedata_list = ['TWO','DBL','SEQDBL','SEQ']
         self.typedata = ttk.Combobox(self.img_frame,values=self.Input_typedata_list)
             # SEQ
         self.SEQDirname = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
@@ -128,8 +136,21 @@ class image_input:
         self.get_Imgdouble = tk.Button(self.img_frame,text="🗎",command = lambda: self.path_choice(self.Input_Imgdouble, self.Imgdouble),
                                     foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
             #MASK
-        self.CPIV_ROI = tk.Checkbutton(self.img_frame, onvalue='OK', offvalue='NO', variable=self.varCPIV_ROI,foreground="chartreuse2",
+        self.Masque = tk.Checkbutton(self.img_frame, onvalue='OK', offvalue='NO', variable=self.varMasque,foreground="chartreuse2",
                                        background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+        self.TypeMasque = ttk.Combobox(self.img_frame,values=self.Input_TypeMasque_list)
+            #MASK ONE
+        self.OneNameMasque = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                        highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=23)
+        self.get_OneNameMasque = tk.Button(self.img_frame,text="🗎",command = lambda: self.path_choice(self.Input_OneNameMasque, self.OneNameMasque),
+                                    foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+         #MASK ONE
+        self.SeqDirMasque = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",
+                                        highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=23)
+        self.get_SeqDirMasque = tk.Button(self.img_frame,text="🗎",command = lambda: self.path_choice(self.Input_SeqDirMasque, self.SeqDirMasque),
+                                    foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+
+        #toggleable non-interactive items
 
         #toggleable non-interactive items
             #SEQ
@@ -139,13 +160,13 @@ class image_input:
         self.seq_data_label_seq = tk.Label(self.img_frame ,text='>>> sequence info :')
         self.seq_data_label_seq.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
-        self.seq_data_label_deb = tk.Label(self.img_frame ,text='>>>> début :')
+        self.seq_data_label_deb = tk.Label(self.img_frame ,text='>>>> Start :')
         self.seq_data_label_deb.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
         self.seq_data_label_inter = tk.Label(self.img_frame ,text='>>>> inter image :')
         self.seq_data_label_inter.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
-        self.seq_data_label_doub = tk.Label(self.img_frame ,text='>>>> inter double :')
+        self.seq_data_label_doub = tk.Label(self.img_frame ,text='>>>> inter pairs :')
         self.seq_data_label_doub.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
             #TWO
@@ -157,6 +178,15 @@ class image_input:
             #DBL
         self.DBL_label_path = tk.Label(self.img_frame ,text='>>> Path Image double:')
         self.DBL_label_path.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+            #MASK
+        self.Mask_type_label = tk.Label(self.img_frame ,text='>>> Mask type')
+        self.Mask_type_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+            #MASK ONE
+        self.Mask_one_label = tk.Label(self.img_frame ,text='>>>> Path mask :')
+        self.Mask_one_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+            #MASK SEQ
+        self.Mask_seq_label = tk.Label(self.img_frame ,text='>>>> Path mask sequence :')
+        self.Mask_seq_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
 
     def setup(self):
@@ -183,14 +213,18 @@ class image_input:
         image_label = tk.Label(self.img_frame ,text='>> Image selection :')
         image_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
         image_label.grid(column = 1, row = 2, sticky = 'W')
+        #-----------------------------------------
+
 
         #--------- Mask selection ----------------
         mask_label = tk.Label(self.img_frame ,text='>> Add a mask :')
         mask_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
         mask_label.grid(column = 1, row = 8, sticky = 'W')
-        self.CPIV_ROI.grid(column = 2, row = 8, sticky = 'W')
-        self.CPIV_ROI.deselect()
-    def type_choice(self):
+        self.Masque.grid(column = 2, row = 8, sticky = 'W')
+        self.Masque.deselect() # option is deselected by default to avoid having a none variable
+        #-----------------------------------------
+
+    def type_choice(self): # a routine that runs every tick to see if a choice-related variable has changed
         if self.Input_typedata != self.previous_typedata and self.Input_typedata != '':
             self.hide_all()
             if self.Input_typedata == 'SEQ':
@@ -202,19 +236,49 @@ class image_input:
             elif self.Input_typedata == 'SEQDBL':
                 self.show_seqdbl()
             self.previous_typedata = self.Input_typedata
-        if self.CalculCPIV_ROI != self.CalculCPIV_ROI_old:
-            if self.CalculCPIV_ROI == 'OK':
+        if self.Input_Masque != self.Input_Masque_old:
+            if self.Input_Masque == 'OK':
                 self.show_mask()
             else:
                 self.hide_mask()
-            self.CalculCPIV_ROI_old = self.CalculCPIV_ROI
-        
+                self.hide_mask_one()
+                self.hide_mask_seq()
+                self.Input_TypeMasqueold = ''
+            self.Input_Masque_old = self.Input_Masque
+        if self.Input_TypeMasqueold != self.Input_TypeMasque and self.Input_Masque == 'OK':
+            self.hide_mask_one()
+            self.hide_mask_seq()
+            if self.Input_TypeMasque == 'ONE':
+                self.show_mask_one()
+            elif self.Input_TypeMasque == 'SEQ':
+                self.show_mask_seq()
+            self.Input_TypeMasqueold = self.Input_TypeMasque
         
     def show_mask(self):
-        print("Yipee")   
+        self.Mask_type_label.grid(column = 2, row = 9, sticky = 'W')
+        self.TypeMasque.grid(column = 3, row = 9, sticky = 'W')
 
     def hide_mask(self):
-        print(self.CalculCPIV_ROI)
+        self.Mask_type_label.grid_forget()
+        self.TypeMasque.grid_forget()
+
+    def show_mask_one(self):
+        self.Mask_one_label.grid(column = 3, row = 10, sticky = 'W')
+        self.OneNameMasque.grid(column = 4, row = 10, sticky = 'W')
+        self.get_OneNameMasque.grid(column = 5, row = 10, sticky = 'W')
+    
+    def hide_mask_one(self):
+        self.Mask_one_label.grid_forget()
+        self.OneNameMasque.grid_forget()
+        self.get_OneNameMasque.grid_forget()
+
+    def show_mask_seq(self):
+        self.Mask_seq_label.grid(column = 3, row = 10, sticky = 'W')
+        self.SeqDirMasque.grid(column = 4, row = 10, sticky = 'W')
+        self.get_SeqDirMasque.grid(column = 5, row = 10, sticky = 'W')
+    
+    def hide_mask_seq(self):
+        pass
     
     def path_choice(self,var,item): # generic function for path choice 
         filename = fd.askopenfilename()
@@ -239,13 +303,88 @@ class image_input:
         # Get SEQDBL related
             # using the same first variable as SEQ
         # Get Mask related
-        self.CalculCPIV_ROI = self.varCPIV_ROI.get()
+        self.Input_Masque = self.varMasque.get()
+        self.Input_TypeMasque = self.TypeMasque.get()
+        self.Input_OneNameMasque = self.OneNameMasque.get()
+        self.Input_SeqDirMasque = self.SeqDirMasque.get()
 
 
-    def entry_validation(self):
-        validity = True
-        error = ''
-        return validity,error
+    def entry_validation(self): #pretty ugly method to inherit a completion state and an error message, can be improved
+        errors = [['Choose an image type',100],['Choose a valid image type',101],['Choose a path for the first image', 102],
+                  ['Choose a path for the second image', 103],['Choose a path for the double image', 104],
+                  ['Choose a path for the double image sequence', 105], ['Choose a path for the image sequence', 106],
+                  ['Choose a value for the image sequence start', 107], ['Choose a value for the image sequence interval', 108],
+                  ['Choose a value for the image sequence interval between pairs', 109],['Choose an integer value for the image sequence start', 110],
+                  ['Choose an integer value for the image sequence interval', 111], ['Choose an integer value for the image sequence interval between pairs', 112],
+                  ['Choose a mask type', 113], ['Choose a valid mask type', 114], ['Choose a path for the singular mask', 115], 
+                  ['Choose a path for the sequence mask', 116],['Images inputs have been validated ',0]
+        ]
+        if not self.Input_typedata:
+            error = errors[1]
+            return error, False
+        elif not self.Input_typedata in self.Input_typedata_list:
+            error = errors[2]
+            return error, False
+        elif self.Input_typedata == 'TWO':
+            if not self.Input_ImgTWO1:
+                error = errors[3]
+                return error, False
+            elif not self.Input_ImgTWO2:
+                error = errors[4]
+                return error, False
+        elif self.Input_typedata == 'DBL':
+            if not self.Input_Imgdouble:
+                error = errors[5]
+                return error, False
+        elif self.Input_typedata == 'SEQDBL':
+            if not self.Input_SEQDirname:
+                error = errors[6]
+                return error, False
+        elif self.Input_typedata == 'SEQ':
+            if not self.Input_SEQDirname:
+                    error = errors[7]
+                    return error, False
+            elif not self.Input_SEQDebut:
+                error = errors[8]
+                return error, False
+            elif not self.Input_SEQinterImg:
+                error = errors[9]
+                return error, False
+            elif not self.Input_SEQinterPaire:
+                error = errors[10]
+                return error, False
+            else:
+                try:
+                    self.Input_SEQDebut = int(self.Input_SEQDebut)
+                except:
+                    error = errors[11]
+                    return error, False
+                try:
+                    self.Input_SEQinterImg = int(self.Input_SEQinterImg)
+                except:
+                    error = errors[12]
+                    return error, False
+                try:
+                    self.Input_SEQinterPaire = int(self.Input_SEQinterPaire)
+                except:
+                    error = errors[13]
+                    return error, False
+        if self.Input_Masque == 'OK':
+            if not self.Input_TypeMasque:
+                error = error[14]
+                return error, False
+            elif not self.Input_TypeMasque in self.Input_TypeMasque_list:
+                error = error[15]
+                return error, False
+            elif self.Input_TypeMasque == 'ONE':
+                if not self.Input_OneNameMasque:
+                    error = error[16]
+                    return error, False
+            elif self.Input_TypeMasque == 'DBL':
+                if not self.Input_SeqDirMasque:
+                    error = error[17]
+                    return error, False
+        return errors[18], True
     
     def hide_all(self):
         #SEQ related
@@ -280,7 +419,7 @@ class image_input:
         self.seq_data_label_path.grid(column = 2, row = 3, sticky = 'W')
         #path selection
         self.SEQDirname.grid(column = 3, row = 3, sticky = 'W')
-        self.get_SEQdir.grid(column = 4, row = 3)
+        self.get_SEQdir.grid(column = 4, row = 3, sticky = 'W')
         #global Label data
         self.seq_data_label_seq.grid(column = 2, row = 4, sticky = 'W')
         #local label
@@ -300,8 +439,8 @@ class image_input:
         self.ImgTWO1.grid(column = 3, row = 3, sticky = 'W')
         self.ImgTWO2.grid(column = 3, row = 4, sticky = 'W')
         #Buttons
-        self.get_ImgTWO1.grid(column = 4, row = 3)
-        self.get_ImgTWO2.grid(column = 4, row = 4)
+        self.get_ImgTWO1.grid(column = 4, row = 3, sticky = 'W')
+        self.get_ImgTWO2.grid(column = 4, row = 4, sticky = 'W')
 
     def show_dbl(self):
         #label 
@@ -309,7 +448,7 @@ class image_input:
         #entry
         self.Imgdouble.grid(column = 3, row = 3, sticky = 'W')
         #Button
-        self.get_Imgdouble.grid(column = 4, row = 3)
+        self.get_Imgdouble.grid(column = 4, row = 3, sticky = 'W')
 
     def show_seqdbl(self):
         #path label
@@ -317,10 +456,7 @@ class image_input:
         #entry
         self.SEQDirname.grid(column = 3, row = 3, sticky = 'W')
         #button
-        self.get_SEQdir.grid(column = 4, row = 3)
-
-
-        
+        self.get_SEQdir.grid(column = 4, row = 3, sticky = 'W')
 
 class calcul_input:
     def __init__(self) -> None:
