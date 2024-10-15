@@ -11,7 +11,7 @@ class PIV_UI :
         self.window.geometry('900x1000')
         self.window.configure(bg='gray3') 
         self.window.protocol("WM_DELETE_WINDOW", self.closing)
-        self.text_font = font.Font(family='Consolas',size=10)
+        self.text_font = font.Font(font='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
         self.main_display()
         self.image = image_input(self.window,tk)
@@ -37,9 +37,20 @@ class PIV_UI :
         Prez_frame.config(bg='gray3',highlightbackground='chartreuse2',highlightcolor="chartreuse2",highlightthickness=3,relief='sunken')
         Prez_frame.pack(fill='x', padx = 5, pady = 2)
         # Logo/Title
-        title = tk.Label(Prez_frame, text="PIV calcul \n(LOGO à mettre ici)", font=self.title_font)
+        ascii_art = """
+
+        ██████╗ ██╗██╗   ██╗     ██████╗ █████╗ ██╗      ██████╗██╗   ██╗██╗     
+        ██╔══██╗██║██║   ██║    ██╔════╝██╔══██╗██║     ██╔════╝██║   ██║██║     
+        ██████╔╝██║██║   ██║    ██║     ███████║██║     ██║     ██║   ██║██║     
+        ██╔═══╝ ██║╚██╗ ██╔╝    ██║     ██╔══██║██║     ██║     ██║   ██║██║     
+        ██║     ██║ ╚████╔╝     ╚██████╗██║  ██║███████╗╚██████╗╚██████╔╝███████╗
+        ╚═╝     ╚═╝  ╚═══╝       ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝
+                                                                                
+
+        """
+        title = tk.Label(Prez_frame, text=ascii_art, font=("Courier", 7), bg='gray3', fg='chartreuse2', justify='left')
         title.config(bg='gray3',fg='chartreuse2')
-        title.pack(side='top', pady = 2)
+        title.pack()
 
     def refresh_window(self):
         self.image.refresh()
