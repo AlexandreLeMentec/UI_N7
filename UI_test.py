@@ -86,6 +86,24 @@ class calcul_input:
         self.CalculCPIV_dimXYcell = ''
         self.CalculCPIV_dimX = ''
         self.CalculCPIV_dimY = ''
+            # covered zone
+        self.CalculCPIV_recouv = ''
+        self.CalculCPIV_recouv1 = ''
+        self.CalculCPIV_recouv2 = ''
+            # ROI 
+        self.CalculCPIV_ROI = 'NO'
+        self.CalculCPIV_ROIval = ''
+        self.CalculCPIV_ROIvalx0 = ''
+        self.CalculCPIV_ROIvaly0 = ''
+        self.CalculCPIV_ROIvalx1 = ''
+        self.CalculCPIV_ROIvaly1 = ''
+            #Conv tools
+        self.CalculCPIV_ConvTools = ''
+            #Post processing filter
+        self.CalculCPIV_SuiviCalcul = 'NO'
+        self.CalculCPIV_VecX = ''
+        self.CalculCPIV_VecY = ''
+        
 
         #global interactive items
             # method choice
@@ -94,6 +112,11 @@ class calcul_input:
         self.inp_CalculCPIV_dimX = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
                                    highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
         self.inp_CalculCPIV_dimY = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
+            # covered zone
+        self.inp_CalculCPIV_recouv1 = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
+        self.inp_CalculCPIV_recouv2 = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
                                    highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
 
         #Toggleable non-interactive items
@@ -111,6 +134,10 @@ class calcul_input:
         self.XY_dim_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
         self.XY_dim_choice_label = tk.Label(self.calc_frame, text='>>> [X][Y]')
         self.XY_dim_choice_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+            # covered zone
+        self.covered_zone_label = tk.Label(self.calc_frame, text='>> covering zone parameters')
+        self.covered_zone_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+        self.coverd_zone_choice_label = tk.Label(self.calc_frame, text='>>> [1][2] ( floats in [0, 1[ )')
 
 
     def setup(self):
@@ -132,8 +159,10 @@ class calcul_input:
         # method choice
         self.CalculCPIV_meths = self.choice_CalculCPIV_meths.get()
         # X Y
-
-
+        self.CalculCPIV_dimY = self.inp_CalculCPIV_dimY.get()
+        self.CalculCPIV_dimX = self.inp_CalculCPIV_dimX.get()
+        self.CalculCPIV_dimXYcell = self.CalculCPIV_dimX + ' ' + self.CalculCPIV_dimY
+        # covered zone
 
     def choice(self):
         pass

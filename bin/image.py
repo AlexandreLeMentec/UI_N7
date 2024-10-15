@@ -261,7 +261,7 @@ class image_input:
 
     def entry_validation(self): #pretty ugly method to inherit a completion state and an error message, can be improved
         # we first define EVERY SINGLE ERROR POSSIBLE (necessitate use case branching scenarios)
-        errors = [['Choose an image type',100],['Choose a valid image type',101],['Choose a path for the first image', 102],
+        error = [['Choose an image type',100],['Choose a valid image type',101],['Choose a path for the first image', 102],
                   ['Choose a path for the second image', 103],['Choose a path for the double image', 104],
                   ['Choose a path for the double image sequence', 105], ['Choose a path for the image sequence', 106],
                   ['Choose a value for the image sequence start', 107], ['Choose a value for the image sequence interval', 108],
@@ -272,72 +272,49 @@ class image_input:
         ]
         # the we check every error, one by one, stopping at the first error
         if not self.Input_typedata:
-            error = errors[1]
-            return error, False
+            return error[1], False
         elif not self.Input_typedata in self.Input_typedata_list:
-            error = errors[2]
-            return error, False
+            return error[2], False
         elif self.Input_typedata == 'TWO':
             if not self.Input_ImgTWO1:
-                error = errors[3]
-                return error, False
+                return error[3], False
             elif not self.Input_ImgTWO2:
-                error = errors[4]
-                return error, False
+                return error[4], False
         elif self.Input_typedata == 'DBL':
             if not self.Input_Imgdouble:
-                error = errors[5]
-                return error, False
+                return error[5], False
         elif self.Input_typedata == 'SEQDBL':
             if not self.Input_SEQDirname:
-                error = errors[6]
-                return error, False
+                return error[6], False
         elif self.Input_typedata == 'SEQ':
             if not self.Input_SEQDirname:
-                    error = errors[7]
-                    return error, False
+                    return error[7], False
             elif not self.Input_SEQDebut:
-                error = errors[8]
-                return error, False
+                return error[8], False
             elif not self.Input_SEQinterImg:
-                error = errors[9]
-                return error, False
+                return error[9], False
             elif not self.Input_SEQinterPaire:
-                error = errors[10]
-                return error, False
+                return error[10], False
             else:
-                try:
-                    self.Input_SEQDebut = int(self.Input_SEQDebut)
-                except:
-                    error = errors[11]
-                    return error, False
-                try:
-                    self.Input_SEQinterImg = int(self.Input_SEQinterImg)
-                except:
-                    error = errors[12]
-                    return error, False
-                try:
-                    self.Input_SEQinterPaire = int(self.Input_SEQinterPaire)
-                except:
-                    error = errors[13]
-                    return error, False
+                if not self.Input_SEQDebut.isdigit():
+                    return error[11], False
+                elif not self.Input_SEQinterImg.isdigit():
+                    return error[12], False
+                elif not self.Input_SEQinterPaire.isdigit():
+                    return error[13], False
         if self.Input_Masque == 'OK':
             if not self.Input_TypeMasque:
-                error = error[14]
-                return error, False
+                return error[14], False
             elif not self.Input_TypeMasque in self.Input_TypeMasque_list:
-                error = error[15]
-                return error, False
+                return error[15], False
             elif self.Input_TypeMasque == 'ONE':
                 if not self.Input_OneNameMasque:
-                    error = error[16]
-                    return error, False
+                    return error[16], False
             elif self.Input_TypeMasque == 'DBL':
                 if not self.Input_SeqDirMasque:
-                    error = error[17]
-                    return error, False
+                    return error[17], False
         # if the program hasn't stopped on any error, that means the answer given is valid, hence the validation signal
-        return errors[18], True
+        return error[18], True
     
     def hide_all(self): # a general function used to hide everything related to the image type selection 
         #SEQ related
