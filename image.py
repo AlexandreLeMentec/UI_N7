@@ -36,10 +36,14 @@ class image_input:
         self.title_font = font.Font(family='Consolas',size=20) # a font for title texts
         self.deroulant_style = ttk.Style() # Style created for every combobox created using ttk
         self.deroulant_style.theme_use('clam')
-        self.deroulant_style.configure("TCombobox", fieldbackground= "gray3", background= "gray3", foreground="chartreuse2",
+        self.deroulant_style.configure("TCombobox", listboxbackground='gray3', fieldbackground= "gray3", background= "gray3", foreground="chartreuse2",
                                         bordercolor="chartreuse2",arrowcolor="chartreuse2",
                                         lightcolor="chartreuse2",darkcolor="gray3",focusfill="gray3",
-                                        selectbackground="gray3", selectforeground="chartreuse2")
+                                        selectbackground="gray3", selectforeground="chartreuse2",Listboxforeground= 'chartreuse2', ListboxselectBackground = 'gray3',
+                                        ListboxselectForeground = 'chartreuse2')
+        self.deroulant_style.map("TCombobox",
+              fieldbackground=[('readonly', 'gray3')],
+              background=[('readonly', 'gray3')])
         # tk.option_add('*TCombobox*Listbox.background', 'gray3')
         # tk.option_add('*TCombobox*Listbox.foreground', 'chartreuse2')
         # tk.option_add('*TCombobox*Listbox.selectBackground', 'gray3')
@@ -91,7 +95,8 @@ class image_input:
                                     foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
             #MASK
         self.Masque = tk.Checkbutton(self.img_frame, onvalue='OK', offvalue='NO', variable=self.varMasque,foreground="chartreuse2",
-                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",activebackground='gray3',
+                                       selectcolor='gray3',highlightthickness = 2)
         self.TypeMasque = ttk.Combobox(self.img_frame,values=self.Input_TypeMasque_list, state='readonly')
             #MASK ONE
         self.OneNameMasque = tk.Entry(self.img_frame,foreground="chartreuse2",background="gray3",

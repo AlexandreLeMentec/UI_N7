@@ -13,6 +13,10 @@ class PIV_UI :
         self.window.geometry('900x1000')
         self.window.configure(bg='gray3') 
         self.window.protocol("WM_DELETE_WINDOW", self.closing)
+        self.window.option_add('*TCombobox*Listbox.background', 'gray3')
+        self.window.option_add('*TCombobox*Listbox.foreground', 'chartreuse2')
+        self.window.option_add('*TCombobox*Listbox.selectBackground', 'gray3')
+        self.window.option_add('*TCombobox*Listbox.selectForeground', 'chartreuse2')
         self.text_font = font.Font(font='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
         self.main_display()
@@ -77,14 +81,15 @@ class calcul_input:
         #Styles
         self.deroulant_style = ttk.Style()
         self.deroulant_style.theme_use('clam')
-        self.deroulant_style.configure("TCombobox", fieldbackground= "gray3", background= "gray3", foreground="chartreuse2",
+        self.deroulant_style.configure("TCombobox", listboxbackground='gray3', fieldbackground= "gray3", background= "gray3", foreground="chartreuse2",
                                         bordercolor="chartreuse2",arrowcolor="chartreuse2",
                                         lightcolor="chartreuse2",darkcolor="gray3",focusfill="gray3",
-                                        selectbackground="gray3", selectforeground="chartreuse2")
-        #tk.option_add('*TCombobox*Listbox.background', 'gray3')
-        #tk.option_add('*TCombobox*Listbox.foreground', 'chartreuse2')
-        #tk.option_add('*TCombobox*Listbox.selectBackground', 'gray3')
-        #tk.option_add('*TCombobox*Listbox.selectForeground', 'chartreuse2')
+                                        selectbackground="gray3", selectforeground="chartreuse2",Listboxforeground= 'chartreuse2', ListboxselectBackground = 'gray3',
+                                        ListboxselectForeground = 'chartreuse2')
+        self.deroulant_style.map("TCombobox",
+              fieldbackground=[('readonly', 'gray3')],
+              background=[('readonly', 'gray3')])
+        
         #Variables
             #method choice
         self.CalculCPIV_meths = '' 
@@ -112,8 +117,9 @@ class calcul_input:
             #Post processing filter
         self.CalculCPIV_FiltrePostCalcul = 'NO'
         self.CalculCPIV_FiltrePostCalcul_var = tk.StringVar()
-            #Computing 
+            #Calculation tracking 
         self.CalculCPIV_SuiviCalcul = 'NO'
+        self.CalculCPIV_SuiviCalcul_var = tk.StringVar()
         self.CalculCPIV_VecX = ''
         self.CalculCPIV_VecY = ''
         
@@ -133,7 +139,8 @@ class calcul_input:
                                    highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
             # ROI
         self.CalculCPIV_ROI_bool = tk.Checkbutton(self.calc_frame, onvalue='OK', offvalue='NO', variable=self.CalculCPIV_ROI_var,foreground="chartreuse2",
-                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",activebackground='gray3',
+                                       selectcolor='gray3')
         self.CalculCPIV_ROI_bool.deselect()
         self.inp_CalculCPIV_ROIvalx0 = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
                                    highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
@@ -145,12 +152,16 @@ class calcul_input:
                                    highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
             # Conv tools
         self.CalculCPIV_ConvTools_bool = tk.Checkbutton(self.calc_frame, onvalue='OK', offvalue='NO', variable=self.CalculCPIV_ConvTools_var,foreground="chartreuse2",
-                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",activebackground='gray3',
+                                       selectcolor='gray3')
         self.CalculCPIV_ConvTools_bool.deselect()
             # Post Proc
         self.CalculCPIV_FiltrePostCalcul_bool = tk.Checkbutton(self.calc_frame, onvalue='OK', offvalue='NO', variable=self.CalculCPIV_FiltrePostCalcul_var,foreground="chartreuse2",
-                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2")
+                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",activebackground='gray3',
+                                       selectcolor='gray3')
         self.CalculCPIV_FiltrePostCalcul_bool.deselect()
+            #Calculation Tracking
+        
         
         #Toggleable non-interactive items
 
@@ -183,7 +194,7 @@ class calcul_input:
         self.Conv_label = tk.Label(self.calc_frame, text='>> Convergence tools')
         self.Conv_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
             # PostProc
-        self.Postpro_label = tk.Label(self.calc_frame, text='>> Convergence tools')
+        self.Postpro_label = tk.Label(self.calc_frame, text='>> Post processing')
         self.Postpro_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
 
@@ -214,6 +225,9 @@ class calcul_input:
         #Conv tools
         self.Conv_label.grid(column = 1, row= 9, sticky = 'W')
         self.CalculCPIV_ConvTools_bool.grid(column = 2, row= 9, sticky = 'W')
+        #Postproc
+        self.Postpro_label.grid(column = 1, row= 10, sticky = 'W')
+        self.CalculCPIV_FiltrePostCalcul_bool.grid(column = 2, row= 10, sticky = 'W')
 
 
     def refresh(self):
@@ -233,8 +247,11 @@ class calcul_input:
         self.CalculCPIV_ROIvaly0 = self.inp_CalculCPIV_ROIvaly0.get()
         self.CalculCPIV_ROIvalx1 = self.inp_CalculCPIV_ROIvalx1.get()
         self.CalculCPIV_ROIvaly1 = self.inp_CalculCPIV_ROIvaly1.get()
+        self.CalculCPIV_ROIval = self.CalculCPIV_ROIvalx0 + ' ' + self.CalculCPIV_ROIvaly0 + ' ' + self.CalculCPIV_ROIvalx1+ ' ' + self.CalculCPIV_ROIvaly1
         #Conv tools 
         self.CalculCPIV_ConvTools = self.CalculCPIV_ConvTools_var.get()
+        #Postproc
+        self.CalculCPIV_FiltrePostCalcul = self.CalculCPIV_FiltrePostCalcul_var.get()
 
     def choice(self):
         if self.CalculCPIV_ROI != self.CalculCPIV_ROI_old:
