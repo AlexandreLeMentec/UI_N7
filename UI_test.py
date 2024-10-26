@@ -119,6 +119,7 @@ class calcul_input:
         self.CalculCPIV_FiltrePostCalcul_var = tk.StringVar()
             #Calculation tracking 
         self.CalculCPIV_SuiviCalcul = 'NO'
+        self.CalculCPIV_SuiviCalcul_old = 'NO'
         self.CalculCPIV_SuiviCalcul_var = tk.StringVar()
         self.CalculCPIV_VecX = ''
         self.CalculCPIV_VecY = ''
@@ -161,12 +162,16 @@ class calcul_input:
                                        selectcolor='gray3')
         self.CalculCPIV_FiltrePostCalcul_bool.deselect()
             #Calculation Tracking
+        self.CalculCPIV_SuiviCalcul_bool = tk.Checkbutton(self.calc_frame, onvalue='OK', offvalue='NO', variable=self.CalculCPIV_SuiviCalcul_var,foreground="chartreuse2",
+                                       background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",activebackground='gray3',
+                                       selectcolor='gray3')
+        self.CalculCPIV_SuiviCalcul_bool.deselect()
+        self.CalculCPIV_VecX_inp = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
+        self.CalculCPIV_VecY_inp = tk.Entry(self.calc_frame,foreground="chartreuse2",background="gray3",
+                                   highlightcolor="chartreuse2",highlightbackground="chartreuse2",insertbackground="chartreuse2",font=self.text_font,width=9)
         
-        
-        #Toggleable non-interactive items
-
-
-        #Non-toggleable non-interactive items
+        #non-interactive items
             #global name
         self.Name = tk.Label(self.calc_frame, text='> CALCUL')
         self.Name.config(bg='gray3',fg='chartreuse2',font=self.title_font)
@@ -196,9 +201,11 @@ class calcul_input:
             # PostProc
         self.Postpro_label = tk.Label(self.calc_frame, text='>> Post processing')
         self.Postpro_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
-
-
-
+            # Calculation Tracking
+        self.CalcTrack_label = tk.Label(self.calc_frame, text='>> Calculation tracking')
+        self.CalcTrack_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
+        self.CalcTrackXY_label = tk.Label(self.calc_frame, text='>>> [X][Y]')
+        self.CalcTrackXY_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
 
     def setup(self):
         #setup the frame
@@ -228,6 +235,9 @@ class calcul_input:
         #Postproc
         self.Postpro_label.grid(column = 1, row= 10, sticky = 'W')
         self.CalculCPIV_FiltrePostCalcul_bool.grid(column = 2, row= 10, sticky = 'W')
+        # calc track
+        self.CalcTrack_label.grid(column = 1, row = 11, sticky = 'W')
+        self.CalculCPIV_SuiviCalcul_bool.grid(column = 2, row = 11, sticky = 'W')
 
 
     def refresh(self):
@@ -252,6 +262,10 @@ class calcul_input:
         self.CalculCPIV_ConvTools = self.CalculCPIV_ConvTools_var.get()
         #Postproc
         self.CalculCPIV_FiltrePostCalcul = self.CalculCPIV_FiltrePostCalcul_var.get()
+        #Comp track
+        self.CalculCPIV_SuiviCalcul = self.CalculCPIV_SuiviCalcul_var.get()
+        self.CalculCPIV_VecX = self.CalculCPIV_VecX_inp.get()
+        self.CalculCPIV_VecY = self.CalculCPIV_VecY_inp.get()
 
     def choice(self):
         if self.CalculCPIV_ROI != self.CalculCPIV_ROI_old:
@@ -259,6 +273,11 @@ class calcul_input:
             if self.CalculCPIV_ROI == 'OK':
                 self.show_ROI()
             self.CalculCPIV_ROI_old = self.CalculCPIV_ROI
+        if self.CalculCPIV_SuiviCalcul != self.CalculCPIV_SuiviCalcul_old:
+            self.hide_comp_track()
+            if self.CalculCPIV_SuiviCalcul == 'OK':
+                self.show_comp_track()
+            self.CalculCPIV_SuiviCalcul_old = self.CalculCPIV_SuiviCalcul
                 
     def show_ROI(self):
         self.ROI_label_xy0.grid(column = 2, row= 7, sticky = 'W')
@@ -276,7 +295,15 @@ class calcul_input:
         self.inp_CalculCPIV_ROIvalx1.grid_forget()
         self.inp_CalculCPIV_ROIvaly1.grid_forget()
 
+    def show_comp_track(self):
+        self.CalcTrackXY_label.grid(column = 2, row= 12, sticky = 'W')
+        self.CalculCPIV_VecX_inp.grid(column = 3, row= 12, sticky = 'E')
+        self.CalculCPIV_VecY_inp.grid(column = 4, row= 12, sticky = 'W')
 
+    def hide_comp_track(self):
+        self.CalcTrackXY_label.grid_forget()
+        self.CalculCPIV_VecX_inp.grid_forget()
+        self.CalculCPIV_VecY_inp.grid_forget()
 
 class action_input:
     def __init__(self,window,tk,ttk) -> None:
