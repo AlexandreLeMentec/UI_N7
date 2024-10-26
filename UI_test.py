@@ -312,13 +312,55 @@ class calcul_input:
             ['Choose a computing method', 200], ['choose the x size of the computing window', 201],
             ['Choose the y size of the computing window', 202], ['Choose an integer value for the x size of the computing window', 203],
             ['Choose an integer value for the y size of the computing window', 204], ['Input the first covering zone parameter', 205],
-            ['Input the second covering zone parameter', 206], ['Input the second covering zone parameter', 207],
-            ['Choose a float value for the first covering zone parameter', 208], ['Choose a float value for the second covering zone parameter', 209],
-            ['Input the ', 207],
+            ['Input the second covering zone parameter', 206],
+            ['Choose a float value for the first covering zone parameter', 207], ['Choose a float value for the second covering zone parameter', 208],
+            ['Input the ROI parameters', 209], ['Input integers for the ROI parameters', 210],
+            ['Input the X and Y coordinates for the calculation tracking', 211], ['Input integer for the X and Y coordinates for the calculation tracking', 212]
+            ['calculation imput have been validated', 0]
         ]
-        
+        if not self.CalculCPIV_meths:
+            return error[0], False, {}
+        elif not self.CalculCPIV_dimX:
+            return error[1], False, {}
+        elif not self.CalculCPIV_dimY:
+            return error[2], False, {}
+        elif not self.CalculCPIV_dimX.isdigit():
+            return error[3], False, {}
+        elif not self.CalculCPIV_dimY.isdigit():
+            return error[4], False, {}
+        elif not self.CalculCPIV_recouv1:
+            return error[5], False, {}
+        elif not self.CalculCPIV_recouv2:
+            return error[6], False, {}
+        # elif not self.CalculCPIV_recouv1.isdigit(): TODO: corriger ça avec une méthode isfloat à créer
+            #return error[7], False, {}
+        # elif not self.CalculCPIV_recouv2.isdigit():
+            #return error[8], False, {}
+        elif self.CalculCPIV_ROI == 'OK':
+            if not self.CalculCPIV_ROIvalx0 or not self.CalculCPIV_ROIvaly0 or not self.CalculCPIV_ROIvalx1 or not self.CalculCPIV_ROIvaly1:
+                return error[9], False, {}
+            elif not self.CalculCPIV_ROIvalx0.isdigit():
+                return error[10], False, {}
+            elif not self.CalculCPIV_ROIvalx1.isdigit():
+                return error[10], False, {}
+            elif not self.CalculCPIV_ROIvaly0.isdigit():
+                return error[10], False, {}
+            elif not self.CalculCPIV_ROIvaly1.isdigit():
+                return error[10], False, {}
+        elif self.CalculCPIV_SuiviCalcul == 'OK':
+            if not self.CalculCPIV_VecX or not self.CalculCPIV_VecY:
+                return error[11], False, {}
+            elif not self.CalculCPIV_VecX.isdigit() or not self.CalculCPIV_VecY.isdigit():
+                return error[12], False, {}
+        return error[13], True, self.dict_ans()
 
     def dict_ans(self):
+        ans = {}
+
+
+        return ans
+    
+    def isfloat(self):
         pass
 
 class action_input:

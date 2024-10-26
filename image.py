@@ -285,6 +285,7 @@ class image_input:
                   ['Choose an existing path for the singular mask', 122], ['Choose an existing path for the sequence mask', 123]
         ]
         # the we check every error, one by one, stopping at the first error
+        # The error vector value call match the error code defined in the vector above
         if not self.Input_typedata:
             return error[0], False, ans
         elif not self.Input_typedata in self.Input_typedata_list:
