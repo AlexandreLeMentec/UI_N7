@@ -3,6 +3,7 @@ from tkinter import ttk, font
 from tkinter import filedialog as fd
 from image import image_input
 import sys
+import os
 # from ttkthemes import ThemedTk
 
 class PIV_UI : 
@@ -20,9 +21,9 @@ class PIV_UI :
         self.text_font = font.Font(font='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
         self.main_display()
-        self.image = image_input(self.window,tk,ttk)
-        self.calcul = calcul_input(self.window,tk,ttk)
-        self.action = action_input(self.window,tk,ttk)
+        self.image = image_input(self.window,tk,ttk,os)
+        self.calcul = calcul_input(self.window,tk,ttk,os)
+        self.action = action_input(self.window,tk,ttk,os)
         self.side_thread = ''
         self.start()
 
@@ -71,10 +72,11 @@ class PIV_UI :
         self.window.update()
 
 class calcul_input:
-    def __init__(self,window,tk,ttk) -> None:
+    def __init__(self,window,tk,ttk,os) -> None:
         #Global frame and window
         self.window = window
         self.calc_frame = tk.Frame(self.window)
+        self.os = os
         #fonts 
         self.text_font = font.Font(family='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
@@ -305,9 +307,24 @@ class calcul_input:
         self.CalculCPIV_VecX_inp.grid_forget()
         self.CalculCPIV_VecY_inp.grid_forget()
 
+    def entry_validation(self):
+        error = [
+            ['Choose a computing method', 200], ['choose the x size of the computing window', 201],
+            ['Choose the y size of the computing window', 202], ['Choose an integer value for the x size of the computing window', 203],
+            ['Choose an integer value for the y size of the computing window', 204], ['Input the first covering zone parameter', 205],
+            ['Input the second covering zone parameter', 206], ['Input the second covering zone parameter', 207],
+            ['Choose a float value for the first covering zone parameter', 208], ['Choose a float value for the second covering zone parameter', 209],
+            ['Input the ', 207],
+        ]
+        
+
+    def dict_ans(self):
+        pass
+
 class action_input:
-    def __init__(self,window,tk,ttk) -> None:
+    def __init__(self,window,tk,ttk,os) -> None:
         self.window = window
+        self.os = os
         self.text_font = font.Font(family='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
         self.act_frame = tk.Frame(self.window)
@@ -319,11 +336,6 @@ class action_input:
 
         self.Name.config(bg='gray3',fg='chartreuse2',font=self.title_font)
         self.Name.grid(column = 0, row= 0)
-
-    def refresh(self):
-        pass
-
-
 
 UI = PIV_UI()
 UI.start()

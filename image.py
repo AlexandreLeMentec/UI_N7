@@ -2,9 +2,10 @@ from tkinter import ttk, font
 from tkinter import filedialog as fd
 
 class image_input:
-    def __init__(self,window,tk,ttk) -> None:
+    def __init__(self,window,tk,ttk,os) -> None:
         #general window master class input
         self.window = window
+        self.os = os
         #general frame
         self.img_frame = tk.Frame(self.window)
         self.Input_typedata_list = ['TWO','DBL','SEQDBL','SEQ']
@@ -269,6 +270,7 @@ class image_input:
 
 
     def entry_validation(self): #pretty ugly method to inherit a completion state and an error message, can be improved
+        ans = {}
         # we first define EVERY SINGLE ERROR POSSIBLE (necessitate use case branching scenarios)
         error = [['Choose an image type',100],['Choose a valid image type',101],['Choose a path for the first image', 102],
                   ['Choose a path for the second image', 103],['Choose a path for the double image', 104],
@@ -277,53 +279,94 @@ class image_input:
                   ['Choose a value for the image sequence interval between pairs', 109],['Choose an integer value for the image sequence start', 110],
                   ['Choose an integer value for the image sequence interval', 111], ['Choose an integer value for the image sequence interval between pairs', 112],
                   ['Choose a mask type', 113], ['Choose a valid mask type', 114], ['Choose a path for the singular mask', 115], 
-                  ['Choose a path for the sequence mask', 116],['Images inputs have been validated ',0]
+                  ['Choose a path for the sequence mask', 116],['Images inputs have been validated ',0], ['Choose an existing path for the first image', 117],
+                  ['Choose an existing path for the second image', 118], ['Choose an existing path for the double image', 119],
+                  ['Choose an existing path for the double image sequence', 120], ['Choose an existing path for the image sequence', 121],
+                  ['Choose an existing path for the singular mask', 122], ['Choose an existing path for the sequence mask', 123]
         ]
         # the we check every error, one by one, stopping at the first error
         if not self.Input_typedata:
-            return error[1], False
+            return error[0], False, ans
         elif not self.Input_typedata in self.Input_typedata_list:
-            return error[2], False
+            return error[1], False, ans
         elif self.Input_typedata == 'TWO':
             if not self.Input_ImgTWO1:
-                return error[3], False
+                return error[2], False, ans
+            elif not self.os.path.exists(self.Input_ImgTWO1):
+                return error[18], False, ans
             elif not self.Input_ImgTWO2:
-                return error[4], False
-        elif self.Input_typedata == 'DBL':
+                return error[3], False, ans
+            elif not self.os.path.exists(self.Input_ImgTWO2):
+                return error[19], False, ans
+        elif self.InputS_typedata == 'DBL':
             if not self.Input_Imgdouble:
-                return error[5], False
+                return error[4], False, ans
+            elif not self.os.path.exists(self.Input_Imgdouble):
+                return error[20], False, ans
         elif self.Input_typedata == 'SEQDBL':
             if not self.Input_SEQDirname:
-                return error[6], False
+                return error[5], False, ans
+            elif not self.os.path.exists(self.Input_SEQDirname):
+                return error[21], False, ans
         elif self.Input_typedata == 'SEQ':
             if not self.Input_SEQDirname:
-                    return error[7], False
+                    return error[6], False, ans
+            elif not self.os.path.exists(self.Input_SEQDirname):
+                return error[22], False, ans
             elif not self.Input_SEQDebut:
-                return error[8], False
+                return error[7], False, ans
             elif not self.Input_SEQinterImg:
-                return error[9], False
+                return error[8], False, ans
             elif not self.Input_SEQinterPaire:
-                return error[10], False
+                return error[9], False, ans
             else:
                 if not self.Input_SEQDebut.isdigit():
-                    return error[11], False
+                    return error[10], False, ans
                 elif not self.Input_SEQinterImg.isdigit():
-                    return error[12], False
+                    return error[11], False, ans
                 elif not self.Input_SEQinterPaire.isdigit():
-                    return error[13], False
+                    return error[12], False, ans
         if self.Input_Masque == 'OK':
             if not self.Input_TypeMasque:
-                return error[14], False
+                return error[13], False, ans
             elif not self.Input_TypeMasque in self.Input_TypeMasque_list:
-                return error[15], False
+                return error[14], False, ans
             elif self.Input_TypeMasque == 'ONE':
                 if not self.Input_OneNameMasque:
-                    return error[16], False
+                    return error[15], False, ans
+                elif not self.os.path.exists(self.Input_OneNameMasque):
+                    return error[23], False, ans   
             elif self.Input_TypeMasque == 'DBL':
                 if not self.Input_SeqDirMasque:
-                    return error[17], False
+                    return error[16], False, ans
+                elif not self.os.path.exists(self.Input_SeqDirMasque):
+                    return error[24], False, ans
         # if the program hasn't stopped on any error, that means the answer given is valid, hence the validation signal
-        return error[18], True
+        return error[17], True, self.dict_ans()
+     
+    def dict_ans(self): # creation of the answer dict to be used for the input file validation
+        ans = {}
+        ans['Input_typedata'] = self.Input_typedata
+        if self.Input_typedata == 'TWO':
+            ans['Input_ImgTWO1'] = self.Input_ImgTWO1
+            ans['Input_ImgTWO2'] = self.Input_ImgTWO2
+        elif self.Input_typedata == 'DBL':
+            ans['Input_Imgdouble'] = self.Input_Imgdouble
+        elif self.Input_typedata == 'SEQDBL':
+            ans['Input_SEQDirname'] = self.Input_SEQDirname
+        elif self.Input_typedata == 'SEQ':
+            ans['Input_SEQDirname'] = self.Input_SEQDirname
+            ans['Input_SEQDebut'] = self.Input_SEQDebut
+            ans['Input_SEQinterImg'] = self.Input_SEQinterImg
+            ans['Input_SEQinterPaire'] = self.Input_SEQinterPaire
+        ans['Input_Masque'] = self.Input_Masque
+        if self.Input_Masque == 'OK':
+            ans['Input_TypeMasque'] = self.Input_TypeMasque
+            if self.Input_TypeMasque == 'ONE':
+                ans['Input_OneNameMasque'] = self.Input_OneNameMasque
+            elif self.Input_TypeMasque == 'SEQ':
+                ans['Input_SeqDirMasque'] = self.Input_SeqDirMasque
+        return ans
     
     def hide_all(self): # a general function used to hide everything related to the image type selection 
         #SEQ related
