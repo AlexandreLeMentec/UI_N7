@@ -1,4 +1,4 @@
-from tkinter import ttk, font
+from tkinter import font
 from tkinter import filedialog as fd
 
 class image_input:
