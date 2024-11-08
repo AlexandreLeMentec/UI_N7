@@ -34,7 +34,7 @@ class PIV_UI :
         self.error2 = ''
         self.validation_frame = tk.Frame(self.globalframe)
         self.validation_frame.config(bg='gray3',highlightbackground='chartreuse2',highlightcolor="chartreuse2",highlightthickness=3,relief='sunken')
-        self.save_button = tk.Button(self.validation_frame,text="SAVE",command = self.validity_check,
+        self.save_button = tk.Button(self.validation_frame,text="> SAVE <",command = self.validity_check,
                                     foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",
                                     font=self.title_font)
 
