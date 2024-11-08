@@ -237,9 +237,6 @@ class calcul_input:
     def entry_validation(self): # same thing as for the image class: we check every possible error
         # an error is organised as follow: an error message and an error code, the latter being a bit irrelevant here but 
         # which become a lot more important in bigger projects.
-        # Debug part
-        print(self.dict_ans())
-        #####
         error = [
             ['Choose a computing method', 200], ['choose the x size of the computing window', 201],
             ['Choose the y size of the computing window', 202], ['Choose an integer value for the x size of the computing window', 203],

@@ -17,7 +17,6 @@ A mermaid state diagram describing all the possible variables is provided at the
 The UI is based off **tkinter** on **python 3.11** and necessitate the instalation of the following non-native libraries:
 > -**tk** *(tkinter)*\
 > -**ttk** \
-> -**ttkthemes** *(for visual aspects)*
 
 In term of file organization, the tarball provided should be organized in the right disposition for the file to work together, but in case of faulty installation, here is the file structure:
 

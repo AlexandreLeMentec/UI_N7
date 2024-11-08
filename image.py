@@ -236,7 +236,7 @@ class image_input:
         self.get_SeqDirMasque.grid_forget()
     
     def path_choice(self,var,item): # generic function for path choice 
-        filename = fd.askopenfilename()
+        filename = fd.askopenfilename(defaultextension=".tif", filetypes=(("tagged image file", "*.tif"),("All Files", "*.*") ))
         var = filename
         #self.Input_SEQDirname = filename 
         item.delete(0, 'end')
@@ -267,9 +267,6 @@ class image_input:
 
     def entry_validation(self): #pretty ugly method to inherit a completion state and an error message, can be improved
         ans = {}
-        #Debug part
-        print(self.dict_ans())
-        #######
         # we first define EVERY SINGLE ERROR POSSIBLE (necessitate use case branching scenarios)
         error = [['Choose an image type',100],['Choose a valid image type',101],['Choose a path for the first image', 102],
                   ['Choose a path for the second image', 103],['Choose a path for the double image', 104],
