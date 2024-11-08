@@ -237,12 +237,16 @@ class calcul_input:
     def entry_validation(self): # same thing as for the image class: we check every possible error
         # an error is organised as follow: an error message and an error code, the latter being a bit irrelevant here but 
         # which become a lot more important in bigger projects.
+        # Debug part
+        print(self.dict_ans())
+        #####
         error = [
             ['Choose a computing method', 200], ['choose the x size of the computing window', 201],
             ['Choose the y size of the computing window', 202], ['Choose an integer value for the x size of the computing window', 203],
             ['Choose an integer value for the y size of the computing window', 204], ['Input the first covering zone parameter', 205],
             ['Input the second covering zone parameter', 206],
-            ['Choose a float value for the first covering zone parameter', 207], ['Choose a float value for the second covering zone parameter', 208],
+            ['Choose a float value between 0 and (excluding) 1 for the first covering zone parameter', 207],
+            ['Choose a float value between 0 and (excluding) 1  for the second covering zone parameter', 208],
             ['Input the ROI parameters', 209], ['Input integers for the ROI parameters', 210],
             ['Input the X and Y coordinates for the calculation tracking', 211], ['Input integer for the X and Y coordinates for the calculation tracking', 212],
             ['calculation imput have been validated', 0]
@@ -261,13 +265,17 @@ class calcul_input:
             return error[5], False, {}
         elif not self.CalculCPIV_recouv2:
             return error[6], False, {}
-        elif not self.isfloat(self.CalculCPIV_recouv1):
+        if self.isfloat(self.CalculCPIV_recouv1):
             if not self.is_float_between_0_and_1(self.CalculCPIV_recouv1): 
                 return error[7], False, {}
-        elif not self.isfloat(self.CalculCPIV_recouv2):
-            if not self.is_float_between_0_and_1(self.CalculCPIV_recouv2): 
+        else:
+            return error[7], False, {}
+        if self.isfloat(self.CalculCPIV_recouv2):
+            if not self.is_float_between_0_and_1(self.CalculCPIV_recouv2):
                 return error[8], False, {}
-        elif self.CalculCPIV_ROI == 'OK':
+        else:
+            return error[8], False, {}
+        if self.CalculCPIV_ROI == 'OK':
             if not self.CalculCPIV_ROIvalx0 or not self.CalculCPIV_ROIvaly0 or not self.CalculCPIV_ROIvalx1 or not self.CalculCPIV_ROIvaly1:
                 return error[9], False, {}
             elif not self.CalculCPIV_ROIvalx0.isdigit():
@@ -278,7 +286,7 @@ class calcul_input:
                 return error[10], False, {}
             elif not self.CalculCPIV_ROIvaly1.isdigit():
                 return error[10], False, {}
-        elif self.CalculCPIV_SuiviCalcul == 'OK':
+        if self.CalculCPIV_SuiviCalcul == 'OK':
             if not self.CalculCPIV_VecX or not self.CalculCPIV_VecY:
                 return error[11], False, {}
             elif not self.CalculCPIV_VecX.isdigit() or not self.CalculCPIV_VecY.isdigit():
@@ -308,12 +316,16 @@ class calcul_input:
             # Convert to float
             num = float(s)
             # Check if number is in the desired range
-            return 0 <= num < 1
+            if num <1 and num >= 0:
+                return True
+            else:
+                return False
         except ValueError:
             # Return False if conversion to float fails
             return False
 
-    def isfloat(self,s: str) -> bool: # A quick function to check if a string is a float (can use . or , separator)
+    def isfloat(self,s: str): # A quick function to check if a string is a float (can use . or , separator)
+        print("test")
         pattern = r"^(\d+([.,]\d+)?|\d+[.,]?)$"
         # How does it work: We use the "re" library which enable the use of patterns to recognise str inputs
         # our pattern is (\d+([.,]\d+)?|\d+[.,]?)
