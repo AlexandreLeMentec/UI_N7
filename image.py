@@ -45,10 +45,6 @@ class image_input:
         self.deroulant_style.map("TCombobox",
               fieldbackground=[('readonly', 'gray3')],
               background=[('readonly', 'gray3')])
-        # tk.option_add('*TCombobox*Listbox.background', 'gray3')
-        # tk.option_add('*TCombobox*Listbox.foreground', 'chartreuse2')
-        # tk.option_add('*TCombobox*Listbox.selectBackground', 'gray3')
-        # tk.option_add('*TCombobox*Listbox.selectForeground', 'chartreuse2')
         
 
         #Global interactive items
@@ -145,7 +141,6 @@ class image_input:
             #MASK SEQ
         self.Mask_seq_label = tk.Label(self.img_frame ,text='>>>> Path mask sequence :')
         self.Mask_seq_label.config(bg='gray3',fg='chartreuse2',font=self.text_font)
-
         # non toggleable non-interactive items
         self. Name = tk.Label(self.img_frame, text='> IMAGE')
         self.typedata_label = tk.Label(self.img_frame ,text='>> data type :')
@@ -299,7 +294,7 @@ class image_input:
                 return error[3], False, ans
             elif not self.os.path.exists(self.Input_ImgTWO2):
                 return error[19], False, ans
-        elif self.InputS_typedata == 'DBL':
+        elif self.Input_typedata == 'DBL':
             if not self.Input_Imgdouble:
                 return error[4], False, ans
             elif not self.os.path.exists(self.Input_Imgdouble):

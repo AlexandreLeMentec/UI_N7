@@ -5,6 +5,7 @@ from image import image_input
 from calcul import calcul_input
 import sys
 import os
+from datetime import datetime
 
 # from ttkthemes import ThemedTk
 
@@ -13,7 +14,8 @@ class PIV_UI :
         #self.window = ThemedTk(theme='radiance')
         self.window = tk.Tk()
         self.window.title("UI Calcul PIV")
-        self.window.geometry('900x1000')
+        self.window.geometry('')
+        self.window.pack_propagate(True)
         self.window.configure(bg='gray3')
         self.window.protocol("WM_DELETE_WINDOW", self.closing)
         self.window.option_add('*TCombobox*Listbox.background', 'gray3')
@@ -22,20 +24,30 @@ class PIV_UI :
         self.window.option_add('*TCombobox*Listbox.selectForeground', 'chartreuse2')
         self.text_font = font.Font(font='Consolas',size=10)
         self.title_font = font.Font(family='Consolas',size=20)
+        self.globalframe = tk.Frame(self.window)
+        self.globalframe.config(bg='gray3')
+        self.globalframe.grid(column = 0, row= 0, sticky = 'W')
         self.main_display()
-        self.image = image_input(self.window,tk,ttk,os)
-        self.calcul = calcul_input(self.window,tk,ttk,os,font)
-        self.action = action_input(self.window,tk,ttk,os)
-        self.side_thread = ''
-        self.start()
-
+        self.image = image_input(self.globalframe,tk,ttk,os)
+        self.calcul = calcul_input(self.globalframe,tk,ttk,os,font)
+        self.error1 = ''
+        self.error2 = ''
+        self.validation_frame = tk.Frame(self.globalframe)
+        self.validation_frame.config(bg='gray3',highlightbackground='chartreuse2',highlightcolor="chartreuse2",highlightthickness=3,relief='sunken')
+        self.save_button = tk.Button(self.validation_frame,text="SAVE",command = self.validity_check,
+                                    foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",
+                                    font=self.title_font)
 
     def start(self):
         self.image.setup()
         self.calcul.setup()
-        self.action.setup()
+        self.validation_frame.pack(padx = 1, pady = 2)
+        self.validation_space_setup()
         self.main_loop()
         self.window.mainloop()
+
+    def validation_space_setup(self):
+        self.save_button.pack()
 
     def closing(self):
         self.window.destroy
@@ -43,7 +55,7 @@ class PIV_UI :
 
     def main_display(self):
         # Logo Frame
-        Prez_frame = tk.Frame(self.window)
+        Prez_frame = tk.Frame(self.globalframe)
         Prez_frame.config(bg='gray3',highlightbackground='chartreuse2',highlightcolor="chartreuse2",highlightthickness=3,relief='sunken')
         Prez_frame.pack(fill='x', padx = 5, pady = 2)
         # Logo/Title
@@ -62,7 +74,7 @@ class PIV_UI :
         title.config(bg='gray3',fg='chartreuse2')
         title.pack()
 
-    def refresh_window(self):
+    def refresh_window(self): # a function containing all the action supposed to happen at each frame 
         self.image.refresh()
         self.image.type_choice()
         self.calcul.refresh()
@@ -73,22 +85,44 @@ class PIV_UI :
         self.window.after(100,self.main_loop)
         self.window.update()
 
+    def validity_check(self):
+        m1 = self.image.entry_validation()
+        m2 = self.calcul.entry_validation()
+        if m1[1] and m2[1]:
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
+            filename = f"{timestamp}_OUTPUT.txt"
+            directory = os.path.join("RESULT",filename)
+            self.write_dict(m1[2], m2[2], directory)
+            message = str(m1[0][1]) +'] ' + m1[0][0] + "\n" + str(m2[0][1]) +'] ' + m2[0][0] + "\n" + "Results have been saved at :"
+            message += "\n" + directory
+            self.show_error(message)
+        else:
+            self.show_error(str(m1[0][1]) +'] ' + m1[0][0] + "\n" + str(m2[0][1]) +'] ' + m2[0][0])
+    
+    def write_dict(self, dict1, dict2, directory):
+        with open(directory, 'w') as file:
+            for key, value in dict1.items():
+                file.write(f"{key}   {value}\n")
+            for key, value in dict2.items():
+                file.write(f"{key}   {value}\n")
+        
 
-class action_input:
-    def __init__(self,window,tk,ttk,os) -> None:
-        self.window = window
-        self.os = os
-        self.text_font = font.Font(family='Consolas',size=10)
-        self.title_font = font.Font(family='Consolas',size=20)
-        self.act_frame = tk.Frame(self.window)
-        self.Name = tk.Label(self.act_frame, text='> ACTION')
+    def show_error(self, message):
+    # Create a new Toplevel window for the error
+        error_window = tk.Toplevel()
+        error_window.title("Validity verification")
+        error_window.configure(bg='gray3')
+        # Set the size of the error window
+        error_window.geometry("")
+        # Create a label with the error message
+        label = tk.Label(error_window, text=message, padx=20, pady=20, bg='gray3',fg='chartreuse2',font=self.text_font)
+        label.pack()
+        # Create an "OK" button to close the window
+        ok_button = tk.Button(error_window, text="OK", command=error_window.destroy, 
+                              foreground="chartreuse2",background="gray3",highlightcolor="chartreuse2",highlightbackground="chartreuse2",
+                              font=self.title_font)
+        ok_button.pack(pady=10)
 
-    def setup(self):
-        self.act_frame.config(bg='gray3',highlightbackground='chartreuse2',highlightcolor="chartreuse2",highlightthickness=1,relief='ridge')
-        self.act_frame.pack(fill='x', padx = 5, pady = 2)
-
-        self.Name.config(bg='gray3',fg='chartreuse2',font=self.title_font)
-        self.Name.grid(column = 0, row= 0)
-
-UI = PIV_UI()
-UI.start()
+if __name__ == "__main__":
+    UI = PIV_UI()
+    UI.start()
