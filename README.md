@@ -26,7 +26,7 @@ In term of file organization, the tarball provided should be organized in the ri
 > - image.py
 > - calcul.py
 >> **RESULT** *(file)*
->> - Result_will_be_saved_here.txt
+>> - results_will_be_saved_here.txt
 
 ## How to use it
 to use it, just run the **UI_run.py** file using **python 3.11** while being in the main file containing all the python files:
@@ -48,7 +48,7 @@ An text window should appear next to the main window, notifying you of possible 
 You will then be able to find the said input file in the **RESULT** file.
 
 Here is a map of all the possible variables you'll need to input depending on your choices
-> (NB: This map is made using the mermaid markdown extension and will not appear if the interface you're using doesn't support it)
+> (NB: This map is made using the mermaid markdown extension and will not appear if the interface you're using doesn't support it. For example **GITHUB** enables to view this map to a correct size and to navigate it)
 
 ```mermaid
 flowchart TD

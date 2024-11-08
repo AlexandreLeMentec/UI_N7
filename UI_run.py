@@ -5,7 +5,6 @@ from image import image_input
 from calcul import calcul_input
 import sys
 import os
-import re
 
 # from ttkthemes import ThemedTk
 

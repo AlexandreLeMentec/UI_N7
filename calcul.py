@@ -1,3 +1,5 @@
+import re
+
 class calcul_input:
     def __init__(self,window,tk,ttk,os,font) -> None:
         #Global instaces, frame and window
